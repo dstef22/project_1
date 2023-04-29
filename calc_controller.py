@@ -4,8 +4,8 @@ from calc_formulas import *
 '''
     Final Project 1: Calculator.
         From lab 03 I am creating a gui to use the basic formulas.
-        I am adding the new formulas power, root, percentage, and plus/minus.
-        I am adding formulas to solve for sin, cos, and e.
+        I am adding the new formulas power, percentage, plus/minus, and factorial.
+        I am adding formulas to approximate for sin, cos, and e.
         I am adding a function to backspace and one to clear.
         I am adding a function to save answers to a csv file?
 
@@ -53,6 +53,7 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
         self.divideButton.clicked.connect(lambda: self.divide())
         self.addButton.clicked.connect(lambda: self.add())
         self.minusButton.clicked.connect(lambda: self.subtract())
+        # FIXME
 
         # Function buttons
         self.clearButton.clicked.connect(lambda: self.clear())

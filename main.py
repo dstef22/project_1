@@ -2,8 +2,8 @@ from calc_controller import *
 '''
     Final Project 1: Calculator.
         From lab 03 I am creating a gui to use the basic formulas.
-        I am adding the new formulas power, and root.
-        I am adding formulas to solve for sin, cos, and e.
+        I am adding the new formulas power, root, and factorial.
+        I am adding formulas to approximate for sin, cos, and e.
         I am adding a function to save answers to a csv file.
     
     Project author:
