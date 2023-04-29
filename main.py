@@ -2,9 +2,11 @@ from calc_controller import *
 '''
     Final Project 1: Calculator.
         From lab 03 I am creating a gui to use the basic formulas.
-        I am adding the new formulas power, root, and factorial.
+        I am adding the new formulas power, percentage, plus/minus, and factorial.
         I am adding formulas to approximate for sin, cos, and e.
-        I am adding a function to save answers to a csv file.
+        I am adding a function to backspace and one to clear.
+        I am adding a function to save answers to a csv file?
+        I am adding a function to calculate the square root?
     
     Project author:
     Dallin Stefanidis
