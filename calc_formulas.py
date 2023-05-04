@@ -13,6 +13,9 @@
     https://github.com/dstef22
 
     Credit and disclaimer:
+    Gui design inspiration came from John Elder in this video:
+    https://www.youtube.com/watch?v=H1FpwbavWIk&list=PLCC34OHNcOtpmCA8s_dpPMvQLyHbvxocY&index=8
+
     Icons used were created by Yusuke Kamiyamane and taken from https://p.yusukekamiyamane.com/.
     These icons are available under a Creative Commons Attribution 3.0 License
     https://creativecommons.org/licenses/by/3.0/.
