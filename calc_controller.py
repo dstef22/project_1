@@ -6,9 +6,7 @@ from calc_formulas import *
         From lab 03 I am creating a gui to use the basic formulas.
         I am adding the new formulas power, percentage, plus/minus, and factorial.
         I am adding formulas to approximate for sin, cos, and e.
-        I am adding a function to backspace and one to clear.
-        I am adding a function to save answers to a csv file?
-        I am adding a function to calculate the square root?
+        I am adding a function to backspace, one to go back to the previous number, and one to clear.
 
     Project author:
     Dallin Stefanidis
@@ -35,7 +33,6 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
     value_1 = 0
     value_2 = 0
     result = 0
-    equation_history = []  # TODO: set up a save method
 
     def __init__(self, *args, **kwargs) -> None:
         """
@@ -45,17 +42,19 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
         """
         super().__init__(*args, **kwargs)
         self.setupUi(self)
+        self.setFixedSize(self.size())
 
         # Function buttons
         self.equalButton.clicked.connect(lambda: self.calculate())
         self.clearButton.clicked.connect(lambda: self.clear())
         self.backspaceButton.clicked.connect(lambda: self.backspace())
+        self.gobackButton.clicked.connect(lambda: self.goback())
 
         # Operator buttons
-        self.eButton.clicked.connect(lambda: self.operation('e'))
-        self.sinButton.clicked.connect(lambda: self.operation('sin'))
-        self.cosButton.clicked.connect(lambda: self.operation('cos'))
-        self.powerButton.clicked.connect(lambda: self.operation('^'))
+        self.eButton.clicked.connect(lambda: self.operation('e^(x)'))
+        self.sinButton.clicked.connect(lambda: self.operation('sin(x)'))
+        self.cosButton.clicked.connect(lambda: self.operation('cos(x)'))
+        self.powerButton.clicked.connect(lambda: self.operation('x^(y)'))
         self.multiplyButton.clicked.connect(lambda: self.operation('x'))
         self.divideButton.clicked.connect(lambda: self.operation('/'))
         self.addButton.clicked.connect(lambda: self.operation('+'))
@@ -63,9 +62,7 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
         self.percentButton.clicked.connect(lambda: self.operation('%'))
         self.plusminusButton.clicked.connect(lambda: self.operation('+/-'))
         self.decimalButton.clicked.connect(lambda: self.operation('.'))
-        # TODO: implement the following
-        # self.rootButton.clicked.connect(lambda: self.operation('sqrt')
-        # self.factorButton.clicked.connect(lambda: self.operation('!')
+        self.factorButton.clicked.connect(lambda: self.operation('x!'))
 
         # Number buttons
         self.oneButton.clicked.connect(lambda: self.numbers('1'))
@@ -79,7 +76,7 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
         self.nineButton.clicked.connect(lambda: self.numbers('9'))
         self.zeroButton.clicked.connect(lambda: self.numbers('0'))
 
-        # Set up operator variables
+        # Set operator variables to default values
         self.__operator = Controller.operator
         self.__value_1 = Controller.value_1
         self.__value_2 = Controller.value_2
@@ -98,16 +95,16 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
 
         try:
             self.__value_2 = float(self.outputLabel.text())
-            if self.__operator == 'e':
+            if self.__operator == 'e^(x)':
                 self.__value_1 = 0
                 self.__result = euler(self.__value_2)
-            elif self.__operator == 'sin':
+            elif self.__operator == 'sin(x)':
                 self.__value_1 = 0
                 self.__result = sin(self.__value_2)
-            elif self.__operator == 'cos':
+            elif self.__operator == 'cos(x)':
                 self.__value_1 = 0
-                self.__result = sin(self.__value_2)
-            elif self.__operator == '^':
+                self.__result = cos(self.__value_2)
+            elif self.__operator == 'x^(y)':
                 self.__result = power(self.__value_1, self.__value_2)
             elif self.__operator == 'x':
                 self.__result = multiply(self.__value_1, self.__value_2)
@@ -117,19 +114,23 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
                 self.__result = add(self.__value_1, self.__value_2)
             elif self.__operator == '-':
                 self.__result = subtract(self.__value_1, self.__value_2)
-        except ValueError:
+            elif self.__operator == 'x!':
+                self.__value_1 = 0
+                if self.__value_2 % 1 == 0:
+                    self.__result = factorial(int(self.__value_2))
+                else:
+                    self.outputLabel.setText('Error')
+        except ValueError and ArithmeticError:
             self.outputLabel.setText('Error')
         else:
             # Currently only outputs to a specific number of decimal places
-            if self.__operator == 'e' or self.__operator == 'sin' or self.__operator == 'cos':
+            if self.__operator == 'e' or self.__operator == 'sin(x)' or self.__operator == 'cos(x)':
                 self.outputLabel.setText(f'{self.__result:.10f}')
             else:
                 if self.__result % 1 == 0:
                     self.outputLabel.setText(f'{self.__result:.0f}')
                 else:
                     self.outputLabel.setText(f'{self.__result:.2f}')
-        finally:
-            pass  # TODO: add calculation to calculation history to save to a file later
 
     def operation(self, operator_sign) -> None:
         """
@@ -137,6 +138,7 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
         :param operator_sign: str
         :return: None
         """
+        single_number_operators = ['e^(x)', 'sin(x)', 'cos(x)', 'x!']
         if self.outputLabel.text() == 'Error':
             self.clear()
 
@@ -156,8 +158,11 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
             if '.' not in self.outputLabel.text():
                 self.outputLabel.setText(self.outputLabel.text() + '.')
         else:
-            self.__value_1 = float(self.outputLabel.text())
-            self.outputLabel.setText('0')
+            self.operatorLabel.setText(operator_sign)
+            if operator_sign not in single_number_operators:
+                self.previousOutputLabel.setText(self.outputLabel.text())
+                self.__value_1 = float(self.outputLabel.text())
+                self.outputLabel.setText('0')
             self.__operator = operator_sign
 
     # Other functions
@@ -167,9 +172,12 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
         :return: None
         """
         self.outputLabel.setText('0')
-        self.__value_1 = None
-        self.__value_2 = None
-        self.__operator = ''
+        self.operatorLabel.clear()
+        self.previousOutputLabel.clear()
+        self.__operator = Controller.operator
+        self.__value_1 = Controller.value_1
+        self.__value_2 = Controller.value_2
+        self.__result = Controller.result
 
     def backspace(self) -> None:
         """
@@ -183,6 +191,21 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
             self.outputLabel.setText(self.outputLabel.text()[:-1])
         else:
             self.outputLabel.setText('0')
+
+    def goback(self) -> None:
+        """
+        Goes back to the previous number (labeled on top of the calculator)
+        :return: None
+        """
+        if self.previousOutputLabel.text() != '':
+            self.outputLabel.setText(self.previousOutputLabel.text())
+            self.__value_1 = float(self.previousOutputLabel.text())
+            self.previousOutputLabel.clear()
+            self.operatorLabel.clear()
+            self.__operator = Controller.operator
+            self.__value_1 = Controller.value_1
+            self.__value_2 = Controller.value_2
+            self.__result = Controller.result
 
     # Number buttons
     def numbers(self, number) -> None:
@@ -198,6 +221,3 @@ class Controller(QMainWindow, Ui_CalculatorWindow):
             self.outputLabel.setText(number)
         elif len(self.outputLabel.text()) < 12:
             self.outputLabel.setText(self.outputLabel.text() + number)
-
-    # Save
-    # TODO: create function to save calculations in a csv file

@@ -3,9 +3,7 @@
         From lab 03 I am creating a gui to use the basic formulas.
         I am adding the new formulas power, percentage, plus/minus, and factorial.
         I am adding formulas to approximate for sin, cos, and e.
-        I am adding a function to backspace and one to clear.
-        I am adding a function to save answers to a csv file?
-        I am adding a function to calculate the square root?
+        I am adding a function to backspace, one to go back to the previous number, and one to clear.
 
     Project author:
     Dallin Stefanidis
@@ -91,11 +89,6 @@ def factorial(value) -> int:
             return 1
     else:
         raise ValueError
-
-
-def root(value) -> float:
-    # TODO: create root function
-    pass
 
 
 def power(value_1, value_2) -> float:
